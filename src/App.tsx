@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 
-// 補色ペア：製品(暖色系) ↔ 仕入先(寒色系)
 const CLIENTS = [
   { id:1, kanji:"丸", color:"#c0392b", name:"丸山商事" },
   { id:2, kanji:"東", color:"#6c3483", name:"東京クリエイト" },
@@ -19,20 +17,35 @@ const SUPPLIERS = [
 ];
 
 const PRODUCTS = [
-  { id:1, kanji:"企", color:"#e67e22", tag:"制作", name:"企画制作",     price:300000, costPrice:120000, supplierId:1 },
-  { id:2, kanji:"撮", color:"#c0392b", tag:"制作", name:"撮影",         price:150000, costPrice:80000,  supplierId:2 },
-  { id:3, kanji:"編", color:"#8e44ad", tag:"制作", name:"映像編集",     price:200000, costPrice:90000,  supplierId:2 },
-  { id:4, kanji:"印", color:"#16a085", tag:"印刷", name:"印刷物制作",   price:80000,  costPrice:55000,  supplierId:3 },
-  { id:5, kanji:"研", color:"#d4ac0d", tag:"研修", name:"研修・セミナー",price:250000, costPrice:60000,  supplierId:4 },
-  { id:6, kanji:"運", color:"#27ae60", tag:"運用", name:"運用管理",     price:120000, costPrice:30000,  supplierId:5 },
-  { id:7, kanji:"稿", color:"#ca6f1e", tag:"制作", name:"原稿・コピー", price:90000,  costPrice:40000,  supplierId:6 },
-  { id:8, kanji:"設", color:"#2471a3", tag:"設計", name:"システム設計", price:350000, costPrice:180000, supplierId:1 },
-  { id:9, kanji:"策", color:"#a93226", tag:"企画", name:"戦略策定",     price:400000, costPrice:100000, supplierId:1 },
+  { id:1, kanji:"企", color:"#e67e22", tag:"制作", name:"企画制作",     price:1500000, costPrice:120000, supplierId:1 },
+  { id:2, kanji:"撮", color:"#c0392b", tag:"制作", name:"撮影",         price:1200000, costPrice:80000,  supplierId:2 },
+  { id:3, kanji:"編", color:"#8e44ad", tag:"制作", name:"映像編集",     price:2000000, costPrice:90000,  supplierId:2 },
+  { id:4, kanji:"印", color:"#16a085", tag:"印刷", name:"印刷物制作",   price:800000,  costPrice:55000,  supplierId:3 },
+  { id:5, kanji:"研", color:"#d4ac0d", tag:"研修", name:"研修・セミナー",price:2500000, costPrice:60000,  supplierId:4 },
+  { id:6, kanji:"運", color:"#27ae60", tag:"運用", name:"運用管理",     price:1250000, costPrice:30000,  supplierId:5 },
+  { id:7, kanji:"稿", color:"#ca6f1e", tag:"制作", name:"原稿・コピー", price:900000,  costPrice:40000,  supplierId:6 },
+  { id:8, kanji:"設", color:"#2471a3", tag:"設計", name:"システム設計", price:3500000, costPrice:180000, supplierId:1 },
+  { id:9, kanji:"策", color:"#a93226", tag:"企画", name:"戦略策定",     price:4000000, costPrice:100000, supplierId:1 },
 ];
 
 const TAGS = ["すべて", ...new Set(PRODUCTS.map(p => p.tag))];
 
-const Badge = ({ kanji, color, size=40 }) => (
+type Client = typeof CLIENTS[number];
+type Supplier = typeof SUPPLIERS[number];
+
+type Row = {
+  uid: number;
+  prodId: number;
+  kanji: string;
+  color: string;
+  name: string;
+  price: number;
+  costPrice: number;
+  qty: number;
+  supplier: Supplier;
+};
+
+const Badge = ({ kanji, color, size=40 }: { kanji: string; color: string; size?: number }) => (
   <div style={{
     width:size, height:size, borderRadius:7, background:color, color:"#fff",
     display:"flex", alignItems:"center", justifyContent:"center",
@@ -41,28 +54,29 @@ const Badge = ({ kanji, color, size=40 }) => (
   }}>{kanji}</div>
 );
 
-const fmt = n => "¥" + Number(n).toLocaleString();
+const fmt = (n: number) => "¥" + Number(n).toLocaleString();
 
 export default function App() {
-  const [client, setClient] = useState(null);
-  const [rows, setRows] = useState([]);
+  const [client, setClient] = useState<Client | null>(null);
+  const [rows, setRows] = useState<Row[]>([]);
   const [tagFilter, setTagFilter] = useState("すべて");
   const [showCost, setShowCost] = useState(true);
 
   const visibleProducts = tagFilter === "すべて" ? PRODUCTS : PRODUCTS.filter(p => p.tag === tagFilter);
 
-  const addRow = (prod) => {
+  const addRow = (prod: typeof PRODUCTS[number]) => {
     const existing = rows.find(r => r.prodId === prod.id);
     if (existing) {
       setRows(r => r.map(row => row.prodId === prod.id ? {...row, qty: row.qty+1} : row));
     } else {
       const sup = SUPPLIERS.find(s => s.id === prod.supplierId);
+      if (!sup) return;
       setRows(r => [...r, { uid: Date.now(), prodId: prod.id, ...prod, qty:1, supplier: sup }]);
     }
   };
 
-  const chgQty = (uid, d) => setRows(r => r.map(row => row.uid===uid ? {...row, qty:Math.max(1,row.qty+d)} : row));
-  const del = (uid) => setRows(r => r.filter(row => row.uid!==uid));
+  const chgQty = (uid: number, d: number) => setRows(r => r.map(row => row.uid===uid ? {...row, qty:Math.max(1,row.qty+d)} : row));
+  const del = (uid: number) => setRows(r => r.filter(row => row.uid!==uid));
 
   const totalSales = rows.reduce((s,r)=>s+r.price*r.qty,0);
   const totalCost  = rows.reduce((s,r)=>s+r.costPrice*r.qty,0);
@@ -73,7 +87,6 @@ export default function App() {
     <div style={{fontFamily:"'Noto Sans JP',sans-serif", background:"#eef2f7", minHeight:"100vh", padding:"20px 16px"}}>
       <div style={{maxWidth:960, margin:"0 auto"}}>
 
-        {/* ヘッダー */}
         <div style={{background:"#0d1b4b", borderRadius:14, padding:"14px 24px", marginBottom:18, display:"flex", alignItems:"center", gap:14}}>
           <div style={{color:"#fff", fontSize:20, fontWeight:"bold", letterSpacing:2}}>未来かんり</div>
           <div style={{width:1, height:24, background:"#ffffff30"}}/>
@@ -84,7 +97,6 @@ export default function App() {
           </label>
         </div>
 
-        {/* クライアント */}
         <div style={{background:"#fff", borderRadius:12, padding:"16px 20px", marginBottom:14, boxShadow:"0 2px 8px rgba(0,0,0,0.07)"}}>
           <div style={{fontSize:12, color:"#888", marginBottom:10, fontWeight:"bold", letterSpacing:1}}>① クライアント</div>
           <div style={{display:"flex", gap:10, flexWrap:"wrap"}}>
@@ -100,11 +112,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* 製品パレット */}
         <div style={{background:"#fff", borderRadius:12, padding:"16px 20px", marginBottom:14, boxShadow:"0 2px 8px rgba(0,0,0,0.07)"}}>
           <div style={{fontSize:12, color:"#888", marginBottom:10, fontWeight:"bold", letterSpacing:1}}>② 製品・サービスを選ぶ（ボタンで追加）</div>
-
-          {/* タグフィルター */}
           <div style={{display:"flex", gap:6, marginBottom:12, flexWrap:"wrap"}}>
             {TAGS.map(t=>(
               <button key={t} onClick={()=>setTagFilter(t)}
@@ -117,8 +126,6 @@ export default function App() {
               </button>
             ))}
           </div>
-
-          {/* 製品ボタン */}
           <div style={{display:"flex", gap:8, flexWrap:"wrap"}}>
             {visibleProducts.map(p=>{
               const sup = SUPPLIERS.find(s=>s.id===p.supplierId);
@@ -132,12 +139,12 @@ export default function App() {
                     transition:"all 0.15s", minWidth:130}}
                   onMouseEnter={e=>e.currentTarget.style.background=p.color+"22"}
                   onMouseLeave={e=>e.currentTarget.style.background=inCart?p.color+"22":"#fff"}>
-                  {/* 売上バッジ */}
                   <Badge kanji={p.kanji} color={p.color} size={32}/>
-                  {/* 仕入先バッジ（補色）小さく右下 */}
-                  <div style={{position:"absolute", top:4, right:4}}>
-                    <Badge kanji={sup.kanji} color={sup.color} size={18}/>
-                  </div>
+                  {sup && (
+                    <div style={{position:"absolute", top:4, right:4}}>
+                      <Badge kanji={sup.kanji} color={sup.color} size={18}/>
+                    </div>
+                  )}
                   <div style={{textAlign:"left"}}>
                     <div style={{fontSize:12, fontWeight:"bold", color:"#333"}}>{p.name}</div>
                     <div style={{fontSize:11, color:"#999"}}>{fmt(p.price)}</div>
@@ -149,10 +156,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* 見積表 */}
         {client && rows.length>0 && (
           <div style={{background:"#fff", borderRadius:12, padding:"16px 20px", boxShadow:"0 2px 8px rgba(0,0,0,0.07)"}}>
-            {/* 宛先 */}
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
               <Badge kanji={client.kanji} color={client.color} size={44}/>
               <div>
@@ -160,8 +165,6 @@ export default function App() {
                 <div style={{fontSize:12, color:"#aaa"}}>御見積書</div>
               </div>
             </div>
-
-            {/* ヘッダー行 */}
             <div style={{
               display:"grid",
               gridTemplateColumns: showCost ? "36px 1.8fr 1fr 60px 1fr 8px 36px 1.4fr 1fr 60px 1fr" : "36px 1.8fr 1fr 60px 1fr 8px",
@@ -174,8 +177,6 @@ export default function App() {
                 <div key={"c"+i} style={{fontSize:10, color:"#c87941", padding:"3px 6px", background:"#fff7ee", borderRadius:4, textAlign:i>=2?"right":"left"}}>{h}</div>
               ))}
             </div>
-
-            {/* データ行 */}
             {rows.map(row=>(
               <div key={row.uid} style={{
                 display:"grid",
@@ -192,7 +193,6 @@ export default function App() {
                 </div>
                 <div style={{textAlign:"right", fontSize:13, fontWeight:"bold", color:"#0d1b4b", padding:"5px 8px", background:"#e8eaf6", borderRadius:6}}>{fmt(row.price*row.qty)}</div>
                 <button onClick={()=>del(row.uid)} style={{border:"none",background:"none",color:"#ccc",cursor:"pointer",fontSize:14,padding:0}}>✕</button>
-
                 {showCost && <>
                   <Badge kanji={row.supplier.kanji} color={row.supplier.color} size={30}/>
                   <div style={{fontSize:12, color:"#666", padding:"5px 8px", background:"#fff7ee", borderRadius:6}}>{row.supplier.name}</div>
@@ -202,8 +202,6 @@ export default function App() {
                 </>}
               </div>
             ))}
-
-            {/* 集計 */}
             <div style={{marginTop:14, borderTop:"2px solid #eee", paddingTop:12, display:"flex", justifyContent:"flex-end", gap:16, flexWrap:"wrap"}}>
               <div style={{textAlign:"right"}}>
                 <div style={{fontSize:11,color:"#aaa"}}>売上合計</div>
