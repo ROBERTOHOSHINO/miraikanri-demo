@@ -17,15 +17,15 @@ const SUPPLIERS = [
 ];
 
 const PRODUCTS = [
-  { id:1, kanji:"企", color:"#e67e22", tag:"制作", name:"企画制作",     price:1500000, costPrice:120000, supplierId:1 },
-  { id:2, kanji:"撮", color:"#c0392b", tag:"制作", name:"撮影",         price:1200000, costPrice:80000,  supplierId:2 },
-  { id:3, kanji:"編", color:"#8e44ad", tag:"制作", name:"映像編集",     price:2000000, costPrice:90000,  supplierId:2 },
+  { id:1, kanji:"企", color:"#e67e22", tag:"制作", name:"企画制作",     price:1500000, costPrice:1200000, supplierId:1 },
+  { id:2, kanji:"撮", color:"#c0392b", tag:"制作", name:"撮影",         price:1200000, costPrice:800000,  supplierId:2 },
+  { id:3, kanji:"編", color:"#8e44ad", tag:"制作", name:"映像編集",     price:2000000, costPrice:1900000,  supplierId:2 },
   { id:4, kanji:"印", color:"#16a085", tag:"印刷", name:"印刷物制作",   price:800000,  costPrice:55000,  supplierId:3 },
-  { id:5, kanji:"研", color:"#d4ac0d", tag:"研修", name:"研修・セミナー",price:2500000, costPrice:60000,  supplierId:4 },
-  { id:6, kanji:"運", color:"#27ae60", tag:"運用", name:"運用管理",     price:1250000, costPrice:30000,  supplierId:5 },
-  { id:7, kanji:"稿", color:"#ca6f1e", tag:"制作", name:"原稿・コピー", price:900000,  costPrice:40000,  supplierId:6 },
-  { id:8, kanji:"設", color:"#2471a3", tag:"設計", name:"システム設計", price:3500000, costPrice:180000, supplierId:1 },
-  { id:9, kanji:"策", color:"#a93226", tag:"企画", name:"戦略策定",     price:4000000, costPrice:100000, supplierId:1 },
+  { id:5, kanji:"研", color:"#d4ac0d", tag:"研修", name:"研修・セミナー",price:2500000, costPrice:2000000,  supplierId:4 },
+  { id:6, kanji:"運", color:"#27ae60", tag:"運用", name:"運用管理",     price:1250000, costPrice:1300000,  supplierId:5 },
+  { id:7, kanji:"稿", color:"#ca6f1e", tag:"制作", name:"原稿・コピー", price:900000,  costPrice:800000,  supplierId:6 },
+  { id:8, kanji:"設", color:"#2471a3", tag:"設計", name:"システム設計", price:3500000, costPrice:2800000, supplierId:1 },
+  { id:9, kanji:"策", color:"#a93226", tag:"企画", name:"戦略策定",     price:4000000, costPrice:3500000, supplierId:1 },
 ];
 
 const TAGS = ["すべて", ...new Set(PRODUCTS.map(p => p.tag))];
