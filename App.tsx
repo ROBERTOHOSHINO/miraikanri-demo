@@ -88,7 +88,7 @@ export default function App() {
       <div style={{maxWidth:960, margin:"0 auto"}}>
 
         <div style={{background:"#0d1b4b", borderRadius:14, padding:"14px 24px", marginBottom:18, display:"flex", alignItems:"center", gap:14}}>
-          <div style={{color:"#fff", fontSize:20, fontWeight:"bold", letterSpacing:2}}>KANRI-core<span style={{fontSize:12, fontWeight:"normal", marginLeft:8, opacity:.75}}>未来かんり</span></div>
+          <div style={{color:"#fff", fontSize:20, fontWeight:"bold", letterSpacing:2}}>KANRI-core<span style={{fontSize:12, fontWeight:"normal", marginLeft:8, opacity:.75}}>Kanri-core(未来かんり)</span></div>
           <div style={{width:1, height:24, background:"#ffffff30"}}/>
           <div style={{color:"#90caf9", fontSize:13}}>見積＋原価 デモ</div>
           <label style={{marginLeft:"auto", color:"#fff", fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:6}}>
